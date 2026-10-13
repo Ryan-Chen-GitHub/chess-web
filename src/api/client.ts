@@ -8,7 +8,12 @@ const API_URL = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
 async function getJson<T>(path: string): Promise<T> {
   const response = await fetch(`${API_URL}${path}`);
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    if (response.status === 404) {
+      throw new Error("Not found");
+    }
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
   }
   return (await response.json()) as T;
 }

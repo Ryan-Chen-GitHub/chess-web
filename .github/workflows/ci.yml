@@ -1,0 +1,29 @@
+# Runs lint, type-check/build, and tests on every push to main and every PR.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Least privilege: the workflow only needs to read the repository.
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installs Node and caches npm downloads between runs.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # "npm ci" installs exactly what package-lock.json specifies.
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm test

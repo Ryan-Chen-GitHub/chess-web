@@ -1,7 +1,11 @@
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig } from "vitest/config";
+// ...your existing plugin import stays as it is...
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-})
+  // ...your existing plugins line stays as it is...
+  test: {
+    environment: "jsdom",
+    setupFiles: "./src/test-setup.ts",
+  },
+});

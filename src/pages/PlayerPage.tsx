@@ -5,40 +5,45 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getPlayer } from "../api/client";
 import type { PlayerRecord } from "../api/types";
 
+// The outcome of one lookup, tagged with the username it was requested for.
+interface LookupResult {
+  username: string;
+  player: PlayerRecord | null;
+  error: string | null;
+}
+
 export default function PlayerPage() {
   // The username comes from the URL: /players/EricRosen
   const { username } = useParams();
   const navigate = useNavigate();
 
   const [input, setInput] = useState("");
-  const [player, setPlayer] = useState<PlayerRecord | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<LookupResult | null>(null);
 
-  // Fetches whenever the username in the URL changes. The "cancelled" flag
-  // stops a slow, outdated response from overwriting a newer one.
+  // Fetches whenever the username in the URL changes. State is only set in
+  // the callbacks below, and the "cancelled" flag stops a slow, outdated
+  // response from overwriting a newer one.
   useEffect(() => {
     if (!username) return;
     let cancelled = false;
-    setLoading(true);
-    setError(null);
     getPlayer(username)
-      .then((record) => {
-        if (!cancelled) setPlayer(record);
+      .then((player) => {
+        if (!cancelled) setResult({ username, player, error: null });
       })
       .catch((err: Error) => {
-        if (!cancelled) {
-          setPlayer(null);
-          setError(err.message);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setResult({ username, player: null, error: err.message });
       });
     return () => {
       cancelled = true;
     };
   }, [username]);
+
+  // Derived during render: a stored result only counts if it belongs to the
+  // username currently in the URL, and "loading" means a lookup is pending.
+  const current = result?.username === username ? result : null;
+  const player = current?.player ?? null;
+  const error = current?.error ?? null;
+  const loading = Boolean(username) && current === null;
 
   // Moves to the player's own URL when the form is submitted.
   function handleSubmit(event: FormEvent) {

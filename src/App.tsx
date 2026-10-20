@@ -2,6 +2,7 @@ import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 
 import OpeningsPage from "./pages/OpeningsPage";
 import PlayerPage from "./pages/PlayerPage";
+import GamePage from "./pages/GamePage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<OpeningsPage />} />
           <Route path="/players" element={<PlayerPage />} />
           <Route path="/players/:username" element={<PlayerPage />} />
+          <Route path="/games/:lichessId" element={<GamePage />} />
         </Routes>
       </main>
     </BrowserRouter>

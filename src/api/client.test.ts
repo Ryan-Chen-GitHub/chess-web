@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getOpenings, getPlayer } from "./client";
+import { getOpenings, getPlayer, getGame } from "./client";
 
 // Replaces the browser's fetch with a fake that returns a canned response.
 function mockFetch(status: number, body: unknown) {
@@ -40,6 +40,16 @@ describe("api client", () => {
 
     expect(fake).toHaveBeenCalledWith(
       expect.stringContaining("/players/a%2Fb%20c"),
+    );
+  });
+
+  it("requests a game by id", async () => {
+    const fake = mockFetch(200, { lichess_id: "abcd1234", moves: [] });
+
+    await getGame("abcd1234");
+
+    expect(fake).toHaveBeenCalledWith(
+      expect.stringContaining("/games/abcd1234"),
     );
   });
 });

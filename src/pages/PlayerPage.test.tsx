@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import * as client from "../api/client";
 import PlayerPage from "./PlayerPage";
@@ -21,6 +21,11 @@ function renderAt(path: string) {
 }
 
 describe("PlayerPage", () => {
+  beforeEach(() => {
+    // RecentGames also loads data, so it needs a fake response in these tests.
+    vi.mocked(client.getPlayerGames).mockResolvedValue([]);
+  });
+  
   it("shows a player's record", async () => {
     vi.mocked(client.getPlayer).mockResolvedValue({
       username: "EricRosen",

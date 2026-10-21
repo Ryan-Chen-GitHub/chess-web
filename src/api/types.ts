@@ -42,3 +42,13 @@ export interface GameDetail {
   played_at: string | null;
   moves: MoveOut[];
 }
+
+// One row of a player's recent games, seen from that player's side.
+export interface GameSummary {
+  lichess_id: string;
+  opponent: string;
+  player_color: "white" | "black";
+  outcome: "win" | "loss" | "draw" | "unknown";
+  opening: string | null;
+  played_at: string | null;
+}

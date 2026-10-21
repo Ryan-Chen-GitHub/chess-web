@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getOpenings, getPlayer, getGame } from "./client";
+import { getOpenings, getPlayer, getGame, getPlayerGames } from "./client";
 
 // Replaces the browser's fetch with a fake that returns a canned response.
 function mockFetch(status: number, body: unknown) {
@@ -50,6 +50,16 @@ describe("api client", () => {
 
     expect(fake).toHaveBeenCalledWith(
       expect.stringContaining("/games/abcd1234"),
+    );
+  });
+
+  it("requests a player's games with a limit", async () => {
+    const fake = mockFetch(200, []);
+
+    await getPlayerGames("alice", 5);
+
+    expect(fake).toHaveBeenCalledWith(
+      expect.stringContaining("/players/alice/games?limit=5"),
     );
   });
 });

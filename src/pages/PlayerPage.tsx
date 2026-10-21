@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getPlayer } from "../api/client";
 import type { PlayerRecord } from "../api/types";
 
+import RecentGames from "../components/RecentGames";
+
 // The outcome of one lookup, tagged with the username it was requested for.
 interface LookupResult {
   username: string;
@@ -84,6 +86,7 @@ export default function PlayerPage() {
               </li>
             ))}
           </ol>
+          <RecentGames username={player.username} />
         </div>
       )}
     </section>

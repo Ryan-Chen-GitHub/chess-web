@@ -96,3 +96,46 @@ input {
   justify-content: center;
   gap: 0.5rem;
 }
+
+/* Recent games list: each row is a rounded card that links to the game. */
+.game-list {
+  list-style: none;
+  padding: 0;
+}
+
+.game-list a {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+}
+
+.game-list a:hover {
+  border-color: var(--accent);
+}
+
+/* Outcome badge: its color depends on the class of the parent row. */
+.badge {
+  min-width: 3.2rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--muted);
+  color: #fff8ec;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.game-win .badge {
+  background: #5f8a4a
+}
+
+.game-loss .badge {
+  background: #b5533c;
+}

@@ -1,4 +1,4 @@
-import type { OpeningCount, OpeningStats, PlayerRecord, GameDetail } from "./types";
+import type { OpeningCount, OpeningStats, PlayerRecord, GameDetail, GameSummary } from "./types";
 
 // The base URL can be overridden with VITE_API_URL at build time.
 const API_URL = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
@@ -33,4 +33,14 @@ export function getPlayer(username: string): Promise<PlayerRecord> {
 // Fetches one game and its moves by Lichess ID.
 export function getGame(lichessId: string): Promise<GameDetail> {
   return getJson<GameDetail>(`/games/${encodeURIComponent(lichessId)}`);
+}
+
+// Fetches a player's most recent games, newest first.
+export function getPlayerGames(
+  username: string,
+  limit = 20,
+): Promise<GameSummary[]> {
+  return getJson<GameSummary[]>(
+    `/players/${encodeURIComponent(username)}/games?limit=${limit}`,
+  );
 }

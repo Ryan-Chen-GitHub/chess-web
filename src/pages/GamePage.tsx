@@ -13,7 +13,8 @@ interface GameLookup {
     error: string | null;
 }
 
-// Shows one game's baord with buttons to step through the moves.
+// Shows one game's board with buttons, arrow keys, and a move list to step
+// through its moves.
 function GameViewer({ game }: { game: GameDetail }) {
     // How many half-moves have been played on the board (0 = starting position).
     const [ply, setPly] = useState(0);
@@ -23,7 +24,34 @@ function GameViewer({ game }: { game: GameDetail }) {
     const sans = useMemo(() => game.moves.map((m) => m.san), [game]);
     const position = useMemo(() => positionAfter(sans, ply), [sans, ply]);
 
-    // the BUTTONS!
+    // Keyboard shortcuts: arrow keys step one move, Home and End jump to the
+    // ends. The listener is attached to the whole window and removed when the
+    // viewer goes away. Typing in a text field is left alone.
+    useEffect(() => {
+        function onKeyDown(event: KeyboardEvent) {
+            const target = event.target as HTMLElement;
+            if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+
+            if (event.key === "ArrowLeft") setPly((p) => Math.max(0, p - 1));
+            else if (event.key === "ArrowRight") setPly((p) => Math.min(total, p + 1));
+            else if (event.key === "Home") setPly(0);
+            else if (event.key === "End") setPly(total);
+            else return;
+
+            // Stops the browser from also scrolling the page on these keys.
+            event.preventDefault();
+        }
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [total]);
+
+    // Groups the moves into rows of two (White's move, then Black's reply),
+    // one row per move number, as in standard score sheets.
+    const rows = [];
+    for (let i = 0; i < total; i += 2) {
+        rows.push(game.moves.slice(i, i + 2));
+    }
+
     return (
         <section>
             <h1>
@@ -50,6 +78,21 @@ function GameViewer({ game }: { game: GameDetail }) {
             <p className="muted">
                 Move {ply} of {total}
             </p>
+
+            {/* Clickable move list: clicking a move jumps the board to that point. */}
+            <ol className="move-list">
+                {rows.map((pair, index) => (
+                    <li key={index}>
+                        <span className="move-number">{index + 1}.</span>
+                        {pair.map((m) => (
+                            <button key={m.ply} className={m.ply === ply ? 
+                            "move active" : "move"} onClick={() => setPly(m.ply)}>
+                                {m.san}
+                            </button>
+                        ))}
+                    </li>
+                ))}
+            </ol>
         </section>
     );
 }

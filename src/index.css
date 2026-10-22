@@ -139,3 +139,43 @@ input {
 .game-loss .badge {
   background: #b5533c;
 }
+
+/* Move list: rows of "1. e4 e5", each move a small clickable button. */
+.move-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.move-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.move-number {
+  color: var(--muted);
+  min-width: 1.8rem;
+  text-align: right;
+}
+
+/* Individual moves look like plain text until hovered or selected. */
+button.move {
+  padding: 0.15rem 0.5rem;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+}
+
+button.move:hover:not(:disabled) {
+  background: var(--border);
+}
+
+/* The move that led to the position on the board. */
+button.move.active {
+  background: var(--accent);
+  color: #fff8ec;
+}
